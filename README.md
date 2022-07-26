@@ -37,3 +37,13 @@ This is the "owotrack for the Project Diva community". It allows you to use your
 6. Press OK, and the widget should show up!
 
 Have fun, and report any bugs! :)
+
+### Additional Information
+
+#### What modules does this use?
+- `express` - hosting the local server
+- `ws` - hosting the websocket server
+- `nut.js` - controlling the computer for gameplay purposes
+
+#### Will there be a V2?
+Most likely, but not sure why it'd be too necessary just yet.
