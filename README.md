@@ -27,6 +27,11 @@ This is the "owotrack for the Project Diva community". It allows you to use your
 3. Once a Hatsune Miku splash screen pops up, tap on the display.
 4. Play some Project Diva (Mega Mix Plus)!
 
+#### Tips
+ - Be gentle when swiping, the grip from your finger to your device may be stronger than the grip from your device on the table and can move the device.
+ - Try not to swipe too aggressively.
+ - Be cautious of how your phone handles tabs and such. You may accidentally open or close something if you aren't cautious.
+
 ### How do I use the OBS widget?
 
 1. Open OBS.
