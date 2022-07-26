@@ -17,7 +17,7 @@ This is the "owotrack for the Project Diva community". It allows you to use your
 
 1. Make sure you have the latest version of Node.JS installed on your system.
 2. Download the [master](https://github.com/raymonable/Tap_PDMMP/archive/refs/heads/main.zip) zip and extract to a location on your computer.
-3. Open a command terminal in that location, and run `npm i`.
+3. Open a command terminal in that location, and run `npm i`. This can take a minute or so.
 4. Then run `node server` after all the packages finish installing.
 
 #### Using it
