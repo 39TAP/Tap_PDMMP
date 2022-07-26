@@ -1,0 +1,251 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TapPDMMP!</title>
+    <style>
+        .btn {
+            width: 25%;
+            float: left;
+            height: 100%;
+        }
+
+        .btn-tri {
+            background-color: #aeda3d99;
+        }
+
+        .btn-sqr {
+            background-color: #e784b399;
+        }
+
+        .btn-x {
+            background-color: #6996d199;
+        }
+
+        .btn-cir {
+            background-color: #e5667699;
+        }
+
+        .btn-tri.active {
+            background-color: #aeda3dd9;
+        }
+
+        .btn-sqr.active {
+            background-color: #e784b3d9;
+        }
+
+        .btn-x.active {
+            background-color: #6996d1d9;
+        }
+
+        .btn-cir.active {
+            background-color: #e56676d9;
+        }
+
+        .btn img {
+            width: 75%;
+            height: auto;
+            position: relative;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            user-select: none;
+        }
+
+        .btn-container {
+            width: 100%;
+            height: 75%;
+            position: fixed;
+            top: 25%;
+            left: 0;
+            background: white;
+        }
+
+        .slider {
+            width: 100%;
+            height: 25%;
+            background: url(assets/slider.png) #222326;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        * {
+            overscroll-behavior-y: contain;
+            touch-action: manipulation;
+        }
+
+        html {
+            touch-action: none;
+        }
+
+        .start-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: url(assets/bg.png);
+            background-size: cover;
+            background-position: 50% 50%;
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="diva-container" style="display: none;">
+        <div class="slider"></div>
+        <div class="btn-container">
+            <div class="btn-tri btn">
+                <img src="assets/btn_tri.png" draggable="false">
+            </div>
+            <div class="btn-sqr btn">
+                <img src="assets/btn_sqr.png" draggable="false">
+            </div>
+            <div class="btn-x btn">
+                <img src="assets/btn_x.png" draggable="false">
+            </div>
+            <div class="btn-cir btn">
+                <img src="assets/btn_cir.png" draggable="false">
+            </div>
+        </div>
+    </div>
+    <div class="start-container"></div>
+    <script>
+        function isTouchDevice() {
+            return (('ontouchstart' in window));
+        }
+
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        var slider = document.querySelector('.slider');
+        var slider_active = false;
+        var slider_movement = 0;
+        var slider_position = 0;
+        var slider_last_movement = 0;
+
+        var url = window.location.href.split('/')
+
+        const ws = new WebSocket(`ws://${location.href.split(':')[1].split('/')[2]}:8000`);
+        ws.onopen = () => {
+            if ((url.pop() || url.pop()) != 'overlay') {
+                var keys = {
+                    ['tri']: 'w',
+                    ['sqr']: 'a',
+                    ['x']: 's',
+                    ['cir']: 'd'
+                }
+                ws.send('type-controller');
+                document.addEventListener('fullscreenchange', () => {
+                    if (!document.webkitIsFullScreen) {
+                        document.querySelector('.start-container').style.display = "block";
+                        document.querySelector('.diva-container').style.display = "none";
+                    }
+                })
+
+                document.querySelector('.start-container').addEventListener('click', () => {
+                    document.querySelector('.start-container').style.display = "none";
+                    document.querySelector('.diva-container').style.display = "block";
+                    setTimeout(() => {
+                        document.querySelector('.diva-container').requestFullscreen();
+                    }, 250);
+                })
+
+                document.querySelectorAll('.btn').forEach((a) => {
+                    a.addEventListener(isTouchDevice() ? 'touchstart' : 'mousedown', () => {
+                        if (keys[a.classList[0].split('-')[1]]) {
+                            a.classList.add('active');
+                            ws.send('down-' + keys[a.classList[0].split('-')[1]]);
+                        }
+                    })
+                    a.addEventListener(isTouchDevice() ? 'touchend' : 'mouseup', () => {
+                        if (keys[a.classList[0].split('-')[1]]) {
+                            a.classList.remove('active');
+                            ws.send('up-' + keys[a.classList[0].split('-')[1]]);
+                        }
+                    })
+                })
+                slider.addEventListener(isTouchDevice() ? 'touchstart' : 'mousedown', (e) => {
+                    slider_active = true;
+                    var [x, y] = [
+                        (isTouchDevice() ? e.touches[0].clientX : e.clientX),
+                        (isTouchDevice() ? e.touches[0].clientY : e.clientY)
+                    ]
+                    slider_position = x;
+                })
+                slider.addEventListener(isTouchDevice() ? 'touchend' : 'mouseup', (e) => {
+                    slider_active = false;
+                })
+                slider.addEventListener(isTouchDevice() ? 'touchmove' : 'mousemove', (e) => {
+                    var [x, y] = [
+                        (isTouchDevice() ? e.touches[0].clientX : e.clientX),
+                        (isTouchDevice() ? e.touches[0].clientY : e.clientY)
+                    ]
+                    slider_position = x;
+                })
+                setInterval(() => {
+                    if (slider_active) {
+                        slider_movement = slider_position / window.innerWidth
+                        if (slider_last_movement != 0) {
+                            console.log(slider_movement, slider_last_movement)
+                            if (slider_movement < slider_last_movement) {
+                                ws.send('down-q')
+                            } else if (slider_movement >= slider_last_movement) {
+                                ws.send('down-e')
+                            }
+                        }
+                        slider_last_movement = slider_movement
+                    } else {
+                        if (slider_last_movement != 0) {
+                            slider_last_movement = 0;
+                            slider_movement = 0;
+                            ws.send('up-q');
+                            ws.send('up-e');
+                        }
+                    }
+                }, 50);
+            } else {
+                ws.send('type-overlay');
+                document.querySelector('.start-container').style.display = "none";
+                document.querySelector('.diva-container').style.display = "block";
+                var keys = {
+                    ['w']: 'tri',
+                    ['a']: 'sqr',
+                    ['s']: 'x',
+                    ['d']: 'cir'
+                }
+
+                ws.onmessage = (e) => {
+                    if (e.data.split('-')[0] == 'down') {
+                        document.querySelector('.btn-' + keys[e.data.split('-')[1]]).classList.add('active');
+                    } else if (e.data.split('-')[0] == 'up') {
+                        document.querySelector('.btn-' + keys[e.data.split('-')[1]]).classList.remove('active');
+                    }
+
+                }
+            }
+        }
+
+        // DISABLE PINCH ZOOM BECAUSE BROWSERS ARE STUPID!!!
+
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+            document.body.style.zoom = 0.99;
+        });
+
+        document.addEventListener('gesturechange', function (e) {
+            e.preventDefault();
+            document.body.style.zoom = 0.99;
+        });
+
+        document.addEventListener('gestureend', function (e) {
+            e.preventDefault();
+            document.body.style.zoom = 0.99;
+        });
+    </script>
+</body>
+
+</html>
