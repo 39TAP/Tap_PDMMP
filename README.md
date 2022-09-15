@@ -9,6 +9,8 @@ This is the "owotrack for the Project Diva community". It allows you to use your
 
 **Note, this project is experimental. Gameplay results may vary depending on WiFi stability, device type, so on.**
 
+**THIS DOES NOT WORK FOR IOS DEVICES, AS OF IOS 16 BETA. PLEASE USE AN ANDROID-BASED DEVICE. SORRY!**
+
 (And yes, there's an OBS widget.)
 
 ### How do I use it?
