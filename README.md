@@ -3,6 +3,11 @@ A homeless man's Project Diva Mega Mix Plus Controller.
 
 ![image](https://user-images.githubusercontent.com/101374892/181129034-8b3a6892-b380-48dd-94b9-82a798728be4.png)
 
+## NOTICE
+
+This project will be replaced by TapPDFT+ soon!
+Tap_PDMMP is very buggy and keys are hardcoded into the client.
+
 ### What is this?
 
 This is the "owotrack for the Project Diva community". It allows you to use your mobile devices as controllers!
